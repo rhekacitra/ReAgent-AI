@@ -18,10 +18,9 @@ This workflow reads customer data from a CRM (Google Sheets), checks for valid e
 ## CRM Used
 
 - **Google Sheets** — Used as the CRM backend to store contacts and track email status.
-- 
-A sample file is included: `Sample_CRM.xlsx`
-Use this to create your own Google Sheet and connect it to your workflow.
-It contains mock data for testing, including valid and invalid emails for error handling validation.
+- A sample file is included: `Sample_CRM.xlsx`.
+   - Use this to create your own Google Sheet and connect it to your workflow.
+   - It contains mock data for testing, including valid and invalid emails for error handling validation.
 ---
 
 ## Features & Assumptions
