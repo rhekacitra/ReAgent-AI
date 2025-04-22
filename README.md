@@ -4,7 +4,7 @@ This workflow reads customer data from a CRM (Google Sheets), checks for valid e
 
 ---
 
-## 📦 Setup Instructions
+## Setup Instructions
 
 1. Import `ReAgent_AI.json` into your n8n instance.
 2. Configure the following:
@@ -15,23 +15,16 @@ This workflow reads customer data from a CRM (Google Sheets), checks for valid e
 
 ---
 
-## 🧾 CRM Used
+## CRM Used
 
 - **Google Sheets** — Used as the CRM backend to store contacts and track email status.
 
 ---
 
-## 🔧 Features & Assumptions
+## Features & Assumptions
 
 - Filters for pending emails only.
 - Marks emails as `sent` or `error` in the Google Sheet.
 - Error handling path updates rows with failure reasons.
 - Assumes Gmail API is authorized.
-- Scheduled via n8n Schedule Trigger node.
-
----
-
-## 🎥 Demo Video
-
-[Insert Loom or YouTube link here]
 
