@@ -1,0 +1,615 @@
+{
+  "name": "ReAgent-AI",
+  "nodes": [
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1f_XVSpkqlsvRIZkDRT1RT0zW8OdRHJh5V3tOqIi50y4",
+          "mode": "list",
+          "cachedResultName": "CRM",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1f_XVSpkqlsvRIZkDRT1RT0zW8OdRHJh5V3tOqIi50y4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1f_XVSpkqlsvRIZkDRT1RT0zW8OdRHJh5V3tOqIi50y4/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "email_status",
+              "lookupValue": "pending"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        220,
+        0
+      ],
+      "id": "e4f952ff-7f3c-4743-aadb-5eafe6b54b13",
+      "name": "CRM (Google Sheets)",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "HAQIrGxJMu1ePWJ7",
+          "name": "Google Sheets account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "fd8f7d1c-7aca-48c8-8aa5-95b489c2723a",
+              "leftValue": "={{ $json[\"last_contacted\"] }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "75ac5f1b-ecc8-41e6-abfe-05c6720b7e6b",
+              "leftValue": "={{ new Date($json[\"last_contacted\"]).getTime() }}",
+              "rightValue": "={{ Date.now() - 30 * 24 * 60 * 60 * 1000 }}",
+              "operator": {
+                "type": "number",
+                "operation": "lt"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        420,
+        0
+      ],
+      "id": "d84c23cf-996f-44f2-a888-dbe4378654e2",
+      "name": "Valid Email Status and Last Contacted"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.email }}",
+        "subject": "We Missed You!",
+        "message": "=Hello {{ $json.first_name }} from {{ $json.company }},<br><br>\n\nThank you for purchasing <strong>{{ $json.last_product_purchased }}</strong> during your last session with us. We're reaching out to remind you that the renewal date for your product is <strong>{{ $json.renewal_date }}</strong>.<br><br>\n\nWe truly appreciate your support and look forward to staying connected. If you have any questions or need assistance, feel free to reach out anytime!<br><br>\n\nBest regards,<br>\nRheka Narwastu<br>\n<em>Company Name</em>\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1060,
+        -220
+      ],
+      "id": "fe62773f-9135-443b-a3f7-63341cfd4ff7",
+      "name": "Send Email (Gmail)",
+      "webhookId": "5ebf2226-7846-4719-b18f-c67791e2158f",
+      "retryOnFail": false,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "C4krYJWFAsA4F9tA",
+          "name": "Gmail account 2"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1f_XVSpkqlsvRIZkDRT1RT0zW8OdRHJh5V3tOqIi50y4",
+          "mode": "list",
+          "cachedResultName": "CRM",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1f_XVSpkqlsvRIZkDRT1RT0zW8OdRHJh5V3tOqIi50y4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1f_XVSpkqlsvRIZkDRT1RT0zW8OdRHJh5V3tOqIi50y4/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "email_status": "error",
+            "row_number": "={{ $json.row_number }}"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": [
+            {
+              "id": "first_name",
+              "displayName": "first_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "company",
+              "displayName": "company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "last_product_purchased",
+              "displayName": "last_product_purchased",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "renewal_date",
+              "displayName": "renewal_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "email_status",
+              "displayName": "email_status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "last_contacted",
+              "displayName": "last_contacted",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1740,
+        -80
+      ],
+      "id": "c4464e83-5c61-4ff1-b124-4342f952e3d5",
+      "name": "Email Status Error",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "HAQIrGxJMu1ePWJ7",
+          "name": "Google Sheets account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1f_XVSpkqlsvRIZkDRT1RT0zW8OdRHJh5V3tOqIi50y4",
+          "mode": "list",
+          "cachedResultName": "CRM",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1f_XVSpkqlsvRIZkDRT1RT0zW8OdRHJh5V3tOqIi50y4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1f_XVSpkqlsvRIZkDRT1RT0zW8OdRHJh5V3tOqIi50y4/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "email_status": "sent",
+            "last_contacted": "={{ $now.toISO().split(\"T\")[0]}}",
+            "row_number": "={{ $json[\"row_number\"] }}"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": [
+            {
+              "id": "first_name",
+              "displayName": "first_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "company",
+              "displayName": "company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "last_product_purchased",
+              "displayName": "last_product_purchased",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "renewal_date",
+              "displayName": "renewal_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "email_status",
+              "displayName": "email_status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "last_contacted",
+              "displayName": "last_contacted",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1720,
+        -560
+      ],
+      "id": "f15cd1ab-3956-4a63-94b9-2342f8f6fd36",
+      "name": "Email Status Sent",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "HAQIrGxJMu1ePWJ7",
+          "name": "Google Sheets account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        760,
+        -240
+      ],
+      "id": "b0c3870a-cdf1-46e7-b1b8-b119160985f0",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "errorMessage": "An error just occurred!"
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        740,
+        220
+      ],
+      "id": "2f9efe97-769e-47d8-96a5-1f942e151031",
+      "name": "Stop and Error"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ead11d25-79e5-41e7-946e-a63b5319fd70",
+              "name": "email_status",
+              "value": "error",
+              "type": "string"
+            },
+            {
+              "id": "ab252efb-01e4-4398-84ef-f9765f6ee29f",
+              "name": "row_number",
+              "value": "={{ $('Valid Email Status and Last Contacted').item.json.row_number }}",
+              "type": "number"
+            },
+            {
+              "id": "223e869c-08dc-4db1-b56d-7c7b3c2832ed",
+              "name": "error",
+              "value": "={{ $json.error }}",
+              "type": "string"
+            },
+            {
+              "id": "1dc7ff31-876a-4cb1-87c6-ae05ab176f2d",
+              "name": "",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "c0043a57-89c6-411e-a202-0d69ec02bfe3",
+              "name": "",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1420,
+        -80
+      ],
+      "id": "0ac0e9fa-ad7a-4e5e-bba9-92261f115bb3",
+      "name": "Set Error Email Status"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d7c898ec-eabb-4e30-af49-79ed7de833fc",
+              "name": "email_status",
+              "value": "=sent",
+              "type": "string"
+            },
+            {
+              "id": "9b6acf46-086d-4c33-81b5-080f32709752",
+              "name": "timestamp",
+              "value": "={{ $now }}",
+              "type": "string"
+            },
+            {
+              "id": "a4b211be-af64-49a4-9385-90d02c967677",
+              "name": "message_id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "05060fa0-e891-4c55-b02e-7cce24f03a33",
+              "name": "row_number",
+              "value": "={{ $('Valid Email Status and Last Contacted').item.json.row_number }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1400,
+        -560
+      ],
+      "id": "04e41ef5-1f6d-45c3-a720-4c07d61023ac",
+      "name": "Set Success Email Status"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "54e4d2f3-fcd5-4308-bd5f-cf5c50c1f402",
+      "name": "When clicking ‘Test workflow’"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "CRM (Google Sheets)": {
+      "main": [
+        [
+          {
+            "node": "Valid Email Status and Last Contacted",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Valid Email Status and Last Contacted": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Stop and Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Email (Gmail)": {
+      "main": [
+        [
+          {
+            "node": "Set Success Email Status",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Set Error Email Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Send Email (Gmail)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email Status Sent": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email Status Error": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Error Email Status": {
+      "main": [
+        [
+          {
+            "node": "Email Status Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Success Email Status": {
+      "main": [
+        [
+          {
+            "node": "Email Status Sent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "CRM (Google Sheets)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "OUEFrO5JMYha4dSJ"
+  },
+  "versionId": "7aa97c94-72da-4c69-989d-8f87fe40fa2c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8caf464aa4182ac514ca17745bce08505d2a1fbbe2250310933005648dd0ea42"
+  },
+  "id": "v9NRxhpdHxDeEvQT",
+  "tags": []
+}
