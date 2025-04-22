@@ -6,7 +6,7 @@ This workflow reads customer data from a CRM (Google Sheets), checks for valid e
 
 ## Setup Instructions
 
-1. Import `ReAgent_AI.json` into your n8n instance.
+1. Import `ReAgent_AI.json` into your n8n instance by clicking "Import from File".
 2. Configure the following:
    - Google Sheets credentials (ensure correct spreadsheet ID and sheet name)
    - Gmail node for sending emails
@@ -18,7 +18,10 @@ This workflow reads customer data from a CRM (Google Sheets), checks for valid e
 ## CRM Used
 
 - **Google Sheets** — Used as the CRM backend to store contacts and track email status.
-
+- 
+A sample file is included: `Sample_CRM.xlsx`
+Use this to create your own Google Sheet and connect it to your workflow.
+It contains mock data for testing, including valid and invalid emails for error handling validation.
 ---
 
 ## Features & Assumptions
